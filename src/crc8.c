@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Joona Kontiokoski
+ *
+ * This library is free software; you can redistribute it and/or modify
+ * it under the terms of the MIT license. See LICENSE for details.
+ */
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -20,7 +26,7 @@ uint8_t crc8_calculate(const crc8_t *config, const uint8_t *data, size_t len) {
 	return crc ^ config->xor_value;
 }
 
-int crc8_init(crc8_t *config,
+void crc8_init(crc8_t *config,
 		const uint8_t polynomial,
 		const uint8_t init_value,
 		const uint8_t xor_value,
@@ -47,8 +53,6 @@ int crc8_init(crc8_t *config,
 
 		config->table[i] = byte;
 	}
-
-	return 0;
 }
 
 static inline uint8_t crc8_generate_input_normal(uint8_t crc, uint8_t polynomial) {

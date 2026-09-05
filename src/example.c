@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2026 Joona Kontiokoski
+ *
+ * This library is free software; you can redistribute it and/or modify
+ * it under the terms of the MIT license. See LICENSE for details.
+ */
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
