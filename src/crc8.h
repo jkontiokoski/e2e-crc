@@ -9,19 +9,20 @@
 extern "C" {
 #endif
 
-typedef enum crc8_err {
-	CRC8_ERR_DATA_NULL = 1,
-	CRC8_ERR_INVALID_POLY,
-} crc8_err_e;
-
-typedef struct crc8_opts {
-	uint8_t polynomial;
+typedef struct crc8_t {
 	uint8_t init_value;
-	bool in_reflected;
-	bool out_reflected;
-} crc8_opts_t;
+	uint8_t xor_value;
+	uint8_t table[256];
+} crc8_t;
 
-uint8_t crc8_calculate(const crc8_opts_t *options, const uint8_t *data, size_t len);
+int crc8_init(crc8_t *config,
+		const uint8_t polynomial,
+		const uint8_t init_value,
+		const uint8_t xor_value,
+		const bool in_reflected,
+		const bool out_reflected);
+
+uint8_t crc8_calculate(const crc8_t *config, const uint8_t *data, size_t len);
 
 #ifdef __cplusplus
 }

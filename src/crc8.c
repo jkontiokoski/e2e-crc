@@ -7,29 +7,48 @@
 static inline uint8_t crc8_generate_input_normal(uint8_t crc, uint8_t polynomial);
 static inline uint8_t crc8_generate_input_reflected(uint8_t crc, uint8_t polynomial);
 
-uint8_t crc8_calculate(const crc8_opts_t *options, const uint8_t *data, size_t len) {
-	uint8_t crc = options->init_value;
+uint8_t crc8_calculate(const crc8_t *config, const uint8_t *data, size_t len) {
+	uint8_t crc = config->init_value;
 
 	if (!data) { return crc; }
 
 	for (uint8_t i = 0; i < len; i++) {
-		crc ^= data[i];
+		uint8_t byte = (uint8_t)(data[i] ^ crc);
+		crc = config->table[byte];
+	}
+
+	return crc ^ config->xor_value;
+}
+
+int crc8_init(crc8_t *config,
+		const uint8_t polynomial,
+		const uint8_t init_value,
+		const uint8_t xor_value,
+		const bool in_reflected,
+		const bool out_reflected) {
+	config->init_value = init_value;
+	config->xor_value = xor_value;
+
+	for (size_t i = 0; i < 256; i++) {
+		uint8_t byte = i;
 
 		for (uint8_t j = 0; j < 8; j++) {
-			if (options->in_reflected) {
-				crc = crc8_generate_input_reflected(crc, options->polynomial);
+			if (in_reflected) {
+				byte = crc8_generate_input_reflected(byte, polynomial);
 			}
 			else {
-				crc = crc8_generate_input_normal(crc, options->polynomial);
+				byte = crc8_generate_input_normal(byte, polynomial);
 			}
 		}
+
+		if (out_reflected) {
+			byte ^= 0xFF;
+		}
+
+		config->table[i] = byte;
 	}
 
-	if (options->out_reflected) {
-		crc ^= 0xFF;
-	}
-
-	return crc;
+	return 0;
 }
 
 static inline uint8_t crc8_generate_input_normal(uint8_t crc, uint8_t polynomial) {
