@@ -8,7 +8,7 @@ static inline uint8_t crc8_generate_input_normal(uint8_t crc, uint8_t polynomial
 static inline uint8_t crc8_generate_input_reflected(uint8_t crc, uint8_t polynomial);
 
 uint8_t crc8_calculate(const crc8_opts_t *options, const uint8_t *data, size_t len) {
-	uint8_t crc = options->init_val;
+	uint8_t crc = options->init_value;
 
 	if (!data) { return crc; }
 
@@ -16,7 +16,7 @@ uint8_t crc8_calculate(const crc8_opts_t *options, const uint8_t *data, size_t l
 		crc ^= data[i];
 
 		for (uint8_t j = 0; j < 8; j++) {
-			if (options->in_refl) {
+			if (options->in_reflected) {
 				crc = crc8_generate_input_reflected(crc, options->polynomial);
 			}
 			else {
@@ -25,7 +25,7 @@ uint8_t crc8_calculate(const crc8_opts_t *options, const uint8_t *data, size_t l
 		}
 	}
 
-	if (options->out_refl) {
+	if (options->out_reflected) {
 		crc ^= 0xFF;
 	}
 

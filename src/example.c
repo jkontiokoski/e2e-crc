@@ -3,9 +3,9 @@
 
 static crc8_opts_t opts = {
 	.polynomial = 0x1D,
-	.in_refl = false,
-	.out_refl = false,
-	.init_val = 0,
+	.in_reflected = false,
+	.out_reflected = false,
+	.init_value = 0,
 };
 
 int main(void) {
