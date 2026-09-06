@@ -1,3 +1,6 @@
-example
+crc8_example
+test_runner
 *.a
 *.o
+compile_commands.json
+.cache

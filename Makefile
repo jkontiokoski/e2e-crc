@@ -1,44 +1,45 @@
-# Compiler and tools
 CC      := gcc
 AR      := ar
-CFLAGS  := -Wall -Wextra -Wpedantic -std=c11 -O2
+CFLAGS  := -Wall -Wextra -Wpedantic -std=c11 -O2 -Isrc -Itests/unity
 ARFLAGS := rcs
 
-# Targets
 LIB     := libcrc8.a
-APP     := example
+EXAMPLE := crc8_example
+TEST	:= test_runner
 
-# Sources
 SRC 	:= src
 LIB_SRC := $(SRC)/crc8.c
 LIB_OBJ := $(LIB_SRC:.c=.o)
 
-APP_SRC := $(SRC)/example.c
-APP_OBJ := $(APP_SRC:.c=.o)
+EXAMPLE_SRC := example/example.c
+EXAMPLE_OBJ := $(EXAMPLE_SRC:.c=.o)
 
-.PHONY: all lib app clean
+TEST_SRC := tests/test_crc8.c tests/unity/unity.c
+TEST_OBJ := $(TEST_SRC:.c=.o)
 
-# Default target
+.PHONY: all lib example clean
+
 all: lib
 
-# Build static library
-lib: $(LIB) OBJ_CLEAN
+lib: $(LIB)
 
 $(LIB): $(LIB_OBJ)
 	$(AR) $(ARFLAGS) $@ $^
 
-# Build example application
-app: $(APP) OBJ_CLEAN
+example: $(EXAMPLE)
 
-$(APP): $(APP_OBJ) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $(APP_OBJ) -L. -lcrc8
+$(EXAMPLE): $(EXAMPLE_OBJ) $(LIB)
+	$(CC) $(CFLAGS) -o $@ $(EXAMPLE_OBJ) -L. -lcrc8
 
-# Compilation rule
+test: $(TEST)
+	./$(TEST) -v
+
+$(TEST): $(TEST_OBJ) $(LIB)
+	$(CC) $(CFLAGS) -o $@ $(TEST_OBJ) -L. -lcrc8
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-OBJ_CLEAN:
-	rm -f *.o $(LIB_OBJ) $(APP_OBJ) 
-
-clean: OBJ_CLEAN
-	rm -f $(LIB) $(APP)
+clean:
+	rm -f *.o $(LIB_OBJ) $(EXAMPLE_OBJ) $(TEST_OBJ) \
+		  $(TEST) $(LIB) $(EXAMPLE)
