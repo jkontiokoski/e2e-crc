@@ -10,6 +10,7 @@
 
 #include "unity/unity.h"
 #include "crc8.h"
+#include "unity/unity_internals.h"
 
 static crc8_t config = { 0 };
 
@@ -30,6 +31,30 @@ void test_crc8_multi_byte(void) {
 	uint8_t result = crc8_calculate(&config, data, 4);
 
 	TEST_ASSERT_EQUAL(result, 0xB5);
+}
+
+void test_crc8_in_reflection(void) {
+	uint8_t data[] =  { 0x82, 0x07, 0xAE, 0x10 };
+	crc8_init(&config, 0x7, 0, 0, true, false);
+	uint8_t result = crc8_calculate(&config, data, 4);
+
+	TEST_ASSERT_EQUAL(result, 0x98);
+}
+
+void test_crc8_out_reflection(void) {
+	uint8_t data[] =  { 0x82, 0x07, 0xAE, 0x10 };
+	crc8_init(&config, 0x7, 0, 0, false, true);
+	uint8_t result = crc8_calculate(&config, data, 4);
+
+	TEST_ASSERT_EQUAL(result, 0xAD);
+}
+
+void test_crc8_in_out_reflection(void) {
+	uint8_t data[] =  { 0x82, 0x07, 0xAE, 0x10 };
+	crc8_init(&config, 0x7, 0, 0, true, true);
+	uint8_t result = crc8_calculate(&config, data, 4);
+
+	TEST_ASSERT_EQUAL(result, 0x19);
 }
 
 void test_crc8_saej1850(void) {
@@ -61,6 +86,9 @@ int main(void) {
 
 	RUN_TEST(test_crc8_single_byte, 19);
 	RUN_TEST(test_crc8_multi_byte, 27);
+	RUN_TEST(test_crc8_in_reflection);
+	RUN_TEST(test_crc8_out_reflection);
+	RUN_TEST(test_crc8_in_out_reflection);
 	RUN_TEST(test_crc8_saej1850, 35);
 	RUN_TEST(test_crc8_saej1850zero, 43);
 	RUN_TEST(test_crc8_8h2f, 51);

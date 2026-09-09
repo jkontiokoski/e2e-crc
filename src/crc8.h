@@ -4,8 +4,8 @@
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the MIT license. See LICENSE for details.
  */
-#ifndef __CRC_8__
-#define __CRC_8__
+#ifndef CRC_8_
+#define CRC_8_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -18,6 +18,7 @@ extern "C" {
 typedef struct crc8_t {
 	uint8_t init_value;
 	uint8_t xor_value;
+	bool reflect_output;
 	uint8_t table[256];
 } crc8_t;
 
